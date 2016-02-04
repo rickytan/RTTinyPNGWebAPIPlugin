@@ -1,0 +1,314 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6D30B96A1C633158002B419A /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D30B9691C633158002B419A /* AppKit.framework */; };
+		6D30B96C1C633158002B419A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D30B96B1C633158002B419A /* Foundation.framework */; };
+		6D30B9701C633158002B419A /* RTTinyPNGWebAPIPlugin.xcscheme in Resources */ = {isa = PBXBuildFile; fileRef = 6D30B96F1C633158002B419A /* RTTinyPNGWebAPIPlugin.xcscheme */; };
+		6D30B9731C633158002B419A /* RTTinyPNGWebAPIPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D30B9721C633158002B419A /* RTTinyPNGWebAPIPlugin.m */; };
+		6D30B9761C633158002B419A /* NSObject_Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D30B9751C633158002B419A /* NSObject_Extension.m */; };
+		6D30B9801C633240002B419A /* RTImageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D30B97E1C633240002B419A /* RTImageController.m */; };
+		6D30B9811C633240002B419A /* RTImageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D30B97F1C633240002B419A /* RTImageController.xib */; };
+		6D30B9851C633F8F002B419A /* RTWorkspace.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D30B9831C633F8F002B419A /* RTWorkspace.m */; };
+		6D30B9881C63426A002B419A /* RTImageItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D30B9871C63426A002B419A /* RTImageItem.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		6D30B9661C633158002B419A /* RTTinyPNGWebAPIPlugin.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RTTinyPNGWebAPIPlugin.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D30B9691C633158002B419A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		6D30B96B1C633158002B419A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		6D30B96F1C633158002B419A /* RTTinyPNGWebAPIPlugin.xcscheme */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = RTTinyPNGWebAPIPlugin.xcscheme; path = RTTinyPNGWebAPIPlugin.xcodeproj/xcshareddata/xcschemes/RTTinyPNGWebAPIPlugin.xcscheme; sourceTree = SOURCE_ROOT; };
+		6D30B9711C633158002B419A /* RTTinyPNGWebAPIPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTTinyPNGWebAPIPlugin.h; sourceTree = "<group>"; };
+		6D30B9721C633158002B419A /* RTTinyPNGWebAPIPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RTTinyPNGWebAPIPlugin.m; sourceTree = "<group>"; };
+		6D30B9741C633158002B419A /* NSObject_Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSObject_Extension.h; sourceTree = "<group>"; };
+		6D30B9751C633158002B419A /* NSObject_Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSObject_Extension.m; sourceTree = "<group>"; };
+		6D30B9771C633158002B419A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6D30B97D1C633240002B419A /* RTImageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTImageController.h; sourceTree = "<group>"; };
+		6D30B97E1C633240002B419A /* RTImageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTImageController.m; sourceTree = "<group>"; };
+		6D30B97F1C633240002B419A /* RTImageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RTImageController.xib; sourceTree = "<group>"; };
+		6D30B9821C633F8F002B419A /* RTWorkspace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTWorkspace.h; sourceTree = "<group>"; };
+		6D30B9831C633F8F002B419A /* RTWorkspace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTWorkspace.m; sourceTree = "<group>"; };
+		6D30B9841C633F8F002B419A /* XcodeIDE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XcodeIDE.h; sourceTree = "<group>"; };
+		6D30B9861C63426A002B419A /* RTImageItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTImageItem.h; sourceTree = "<group>"; };
+		6D30B9871C63426A002B419A /* RTImageItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTImageItem.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6D30B9641C633158002B419A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D30B96A1C633158002B419A /* AppKit.framework in Frameworks */,
+				6D30B96C1C633158002B419A /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6D30B95D1C633158002B419A = {
+			isa = PBXGroup;
+			children = (
+				6D30B96D1C633158002B419A /* RTTinyPNGWebAPIPlugin */,
+				6D30B9681C633158002B419A /* Frameworks */,
+				6D30B9671C633158002B419A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6D30B9671C633158002B419A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6D30B9661C633158002B419A /* RTTinyPNGWebAPIPlugin.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6D30B9681C633158002B419A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6D30B9691C633158002B419A /* AppKit.framework */,
+				6D30B96B1C633158002B419A /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6D30B96D1C633158002B419A /* RTTinyPNGWebAPIPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				6D30B9821C633F8F002B419A /* RTWorkspace.h */,
+				6D30B9831C633F8F002B419A /* RTWorkspace.m */,
+				6D30B9771C633158002B419A /* Info.plist */,
+				6D30B9741C633158002B419A /* NSObject_Extension.h */,
+				6D30B9751C633158002B419A /* NSObject_Extension.m */,
+				6D30B97D1C633240002B419A /* RTImageController.h */,
+				6D30B97E1C633240002B419A /* RTImageController.m */,
+				6D30B97F1C633240002B419A /* RTImageController.xib */,
+				6D30B9711C633158002B419A /* RTTinyPNGWebAPIPlugin.h */,
+				6D30B9721C633158002B419A /* RTTinyPNGWebAPIPlugin.m */,
+				6D30B96E1C633158002B419A /* Supporting Files */,
+				6D30B9841C633F8F002B419A /* XcodeIDE.h */,
+				6D30B9861C63426A002B419A /* RTImageItem.h */,
+				6D30B9871C63426A002B419A /* RTImageItem.m */,
+			);
+			path = RTTinyPNGWebAPIPlugin;
+			sourceTree = "<group>";
+		};
+		6D30B96E1C633158002B419A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6D30B96F1C633158002B419A /* RTTinyPNGWebAPIPlugin.xcscheme */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6D30B9651C633158002B419A /* RTTinyPNGWebAPIPlugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D30B97A1C633158002B419A /* Build configuration list for PBXNativeTarget "RTTinyPNGWebAPIPlugin" */;
+			buildPhases = (
+				6D30B9621C633158002B419A /* Sources */,
+				6D30B9631C633158002B419A /* Resources */,
+				6D30B9641C633158002B419A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RTTinyPNGWebAPIPlugin;
+			productName = RTTinyPNGWebAPIPlugin;
+			productReference = 6D30B9661C633158002B419A /* RTTinyPNGWebAPIPlugin.xcplugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6D30B95E1C633158002B419A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = Shiqu;
+				TargetAttributes = {
+					6D30B9651C633158002B419A = {
+						CreatedOnToolsVersion = 7.2;
+					};
+				};
+			};
+			buildConfigurationList = 6D30B9611C633158002B419A /* Build configuration list for PBXProject "RTTinyPNGWebAPIPlugin" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6D30B95D1C633158002B419A;
+			productRefGroup = 6D30B9671C633158002B419A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6D30B9651C633158002B419A /* RTTinyPNGWebAPIPlugin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6D30B9631C633158002B419A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D30B9701C633158002B419A /* RTTinyPNGWebAPIPlugin.xcscheme in Resources */,
+				6D30B9811C633240002B419A /* RTImageController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6D30B9621C633158002B419A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D30B9731C633158002B419A /* RTTinyPNGWebAPIPlugin.m in Sources */,
+				6D30B9851C633F8F002B419A /* RTWorkspace.m in Sources */,
+				6D30B9881C63426A002B419A /* RTImageItem.m in Sources */,
+				6D30B9801C633240002B419A /* RTImageController.m in Sources */,
+				6D30B9761C633158002B419A /* NSObject_Extension.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		6D30B9781C633158002B419A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		6D30B9791C633158002B419A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+			};
+			name = Release;
+		};
+		6D30B97B1C633158002B419A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(HOME)";
+				INFOPLIST_FILE = RTTinyPNGWebAPIPlugin/Info.plist;
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.rickytan.RTTinyPNGWebAPIPlugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xcplugin;
+			};
+			name = Debug;
+		};
+		6D30B97C1C633158002B419A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(HOME)";
+				INFOPLIST_FILE = RTTinyPNGWebAPIPlugin/Info.plist;
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.rickytan.RTTinyPNGWebAPIPlugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xcplugin;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6D30B9611C633158002B419A /* Build configuration list for PBXProject "RTTinyPNGWebAPIPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D30B9781C633158002B419A /* Debug */,
+				6D30B9791C633158002B419A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D30B97A1C633158002B419A /* Build configuration list for PBXNativeTarget "RTTinyPNGWebAPIPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D30B97B1C633158002B419A /* Debug */,
+				6D30B97C1C633158002B419A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6D30B95E1C633158002B419A /* Project object */;
+}
