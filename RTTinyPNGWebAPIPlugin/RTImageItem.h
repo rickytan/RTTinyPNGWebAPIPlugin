@@ -28,7 +28,7 @@
 @property (nonatomic, assign) NSInteger imageSizeOptimized;
 
 @property (nonatomic, strong) NSDate *lastUpdateDate;
-
+@property (nonatomic, assign, getter=isSelected) BOOL selected;
 @property (nonatomic, assign, getter=hasOptimized) BOOL optimized;
 
 + (instancetype)itemWithPath:(NSString *)path;

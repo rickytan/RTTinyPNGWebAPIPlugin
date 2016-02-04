@@ -10,12 +10,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "RTTinyPNGWebAPIPlugin/RTImageController.m"
-            timestampString = "476280165.739979"
+            timestampString = "476288978.368338"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
             landmarkName = "-tableView:setObjectValue:forTableColumn:row:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RTTinyPNGWebAPIPlugin/RTImageController.m"
+            timestampString = "476288978.368338"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "-onSelect:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
