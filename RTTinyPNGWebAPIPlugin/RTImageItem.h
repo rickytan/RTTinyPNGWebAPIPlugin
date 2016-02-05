@@ -8,10 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, RTImageOptimizeState) {
+    RTImageOptimizeStateNormal,
+    RTImageOptimizeStatePending,
+    RTImageOptimizeStateOptimized,
+    RTImageOptimizeStateFailed
+};
+
 @interface RTImageItem : NSObject
 @property (nonatomic, strong) NSString *imageName;
 @property (nonatomic, strong) NSString *imagePath;
 @property (nonatomic, readonly) NSImage *imageIcon;
+@property (nonatomic, assign) NSSize size;
 
 /**
  *  @author Ricky, 16-02-04 19:02:56
@@ -29,7 +37,8 @@
 
 @property (nonatomic, strong) NSDate *lastUpdateDate;
 @property (nonatomic, assign, getter=isSelected) BOOL selected;
-@property (nonatomic, assign, getter=hasOptimized) BOOL optimized;
+@property (nonatomic, assign, getter=hasOptimized, readonly) BOOL optimized;
+@property (nonatomic, assign) RTImageOptimizeState state;
 
 + (instancetype)itemWithPath:(NSString *)path;
 

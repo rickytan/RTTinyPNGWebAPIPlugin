@@ -1,10 +1,10 @@
-//
-//  RTImageItem.m
-//  RTTinyPNGWebAPIPlugin
-//
-//  Created by benfen on 16/2/4.
-//  Copyright © 2016年 Shiqu. All rights reserved.
-//
+    //
+    //  RTImageItem.m
+    //  RTTinyPNGWebAPIPlugin
+    //
+    //  Created by benfen on 16/2/4.
+    //  Copyright © 2016年 Shiqu. All rights reserved.
+    //
 
 #import <Cocoa/Cocoa.h>
 #import <sys/xattr.h>
@@ -18,19 +18,34 @@ static const char *RT_IMAGE_OPTIMIZED_KEY = "com.tinypng.hasOptimized";
 
 + (instancetype)itemWithPath:(NSString *)path
 {
-    RTImageItem *item = [RTImageItem new];
-    item.imagePath = path;
-    NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:path
-                                                                          error:NULL];
-    if (attr) {
-        item.lastUpdateDate = [attr fileModificationDate];
-        
-        if (item.hasOptimized)
-            item.imageSizeOptimized = [attr fileSize];
-        else
-            item.imageSize = [attr fileSize];
-    }
+    RTImageItem *item = [[RTImageItem alloc] initWithPath:path];
+
     return item;
+}
+
+- (instancetype)initWithPath:(NSString *)filePath
+{
+    self = [super init];
+    if (self) {
+        self.imagePath = filePath;
+        NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath
+                                                                              error:NULL];
+        if (attr) {
+            self.lastUpdateDate = [attr fileModificationDate];
+            
+            if (self.hasOptimized) {
+                self.imageSizeOptimized = [attr fileSize];
+                _state = RTImageOptimizeStateOptimized;
+            }
+            else {
+                self.imageSize = [attr fileSize];
+                _state = RTImageOptimizeStateNormal;
+            }
+        }
+        NSImage *image = [[NSImage alloc] initWithContentsOfFile:filePath];
+        self.size = image.size;
+    }
+    return self;
 }
 
 - (NSImage *)imageIcon
@@ -48,21 +63,45 @@ static const char *RT_IMAGE_OPTIMIZED_KEY = "com.tinypng.hasOptimized";
     return _optimized;
 }
 
-- (void)setOptimized:(BOOL)optimized
+- (void)refreshState
 {
-    if (_optimized != optimized) {
-        _optimized = optimized;
+    if (self.imagePath) {
+        BOOL optimized = NO;
+        setxattr(self.imagePath.UTF8String, RT_IMAGE_OPTIMIZED_KEY, &optimized, sizeof(optimized), 0, 0);
         
-        if (self.imagePath) {
-            setxattr(self.imagePath.UTF8String, RT_IMAGE_OPTIMIZED_KEY, &optimized, sizeof(optimized), 0, 0);
-            
-            NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:self.imagePath
-                                                                                  error:NULL];
-            if (attr) {
-                self.lastUpdateDate = [attr fileModificationDate];
-                self.imageSizeOptimized = [attr fileSize];
+        NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:self.imagePath
+                                                                              error:NULL];
+        if (attr) {
+            self.lastUpdateDate = [attr fileModificationDate];
+            self.imageSizeOptimized = [attr fileSize];
+        }
+    }
+}
+
+- (void)setState:(RTImageOptimizeState)state
+{
+    if (_state == state)
+        return;
+    
+    _state = state;
+    switch (_state) {
+        case RTImageOptimizeStateOptimized:
+        {
+            if (self.imagePath) {
+                BOOL optimized = YES;
+                setxattr(self.imagePath.UTF8String, RT_IMAGE_OPTIMIZED_KEY, &optimized, sizeof(optimized), 0, 0);
+                NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:self.imagePath
+                                                                                      error:NULL];
+                if (attr) {
+                    self.lastUpdateDate = [attr fileModificationDate];
+                    self.imageSizeOptimized = [attr fileSize];
+                }
             }
         }
+            break;
+            
+        default:
+            break;
     }
 }
 

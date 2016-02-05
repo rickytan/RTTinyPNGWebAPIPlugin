@@ -1,10 +1,12 @@
-    //
-    //  RTImageController.m
-    //  RTTinyPNGWebAPIPlugin
-    //
-    //  Created by benfen on 16/2/4.
-    //  Copyright © 2016年 Shiqu. All rights reserved.
-    //
+//
+//  RTImageController.m
+//  RTTinyPNGWebAPIPlugin
+//
+//  Created by benfen on 16/2/4.
+//  Copyright © 2016年 Shiqu. All rights reserved.
+//
+
+#import <AppKit/AppKit.h>
 
 #import "RTImageController.h"
 
@@ -50,6 +52,14 @@
                                   inView:controlView];
 }
 
+- (void)drawSortIndicatorWithFrame:(NSRect)cellFrame
+                            inView:(NSView *)controlView
+                         ascending:(BOOL)ascending
+                          priority:(NSInteger)priority
+{
+    
+}
+
 @end
 
 @interface RTImageController () <NSWindowDelegate, NSTableViewDataSource, NSTableViewDelegate>
@@ -69,7 +79,7 @@
 - (void)windowDidLoad {
     [super windowDidLoad];
     
-        // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
     
     {
         RTHeaderCell *cell = [[RTHeaderCell alloc] init];
@@ -96,25 +106,52 @@
 {
     if (self.selectAllCell.state == NSOffState) {
         [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
-            self.selectAllCell.state = NSOnState;
             item.selected = YES;
-            
         }];
+        self.selectAllCell.state = NSOnState;
     }
     else if (self.selectAllCell.state == NSOnState) {
         [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
-            self.selectAllCell.state = NSOffState;
             item.selected = NO;
         }];
+        self.selectAllCell.state = NSOffState;
     }
+    [self.tableView.headerView setNeedsDisplay:YES];
     if (self.imageItems.count) {
         [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.imageItems.count - 1)]
                                   columnIndexes:[NSIndexSet indexSetWithIndex:0]];
     }
 }
 
+- (IBAction)onMarkSelected:(id)sender
+{
+    [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+        ((RTImageItem *)self.imageItems[idx]).selected = YES;
+    }];
+}
+
+- (IBAction)onMarkDeselected:(id)sender
+{
+    [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+        ((RTImageItem *)self.imageItems[idx]).selected = NO;
+    }];
+}
+
+- (IBAction)onViewInFinder:(id)sender
+{
+    NSInteger row = [self.tableView rowForView:sender];
+    if (row >= 0) {
+        RTImageItem *item = self.imageItems[row];
+        [[NSWorkspace sharedWorkspace] selectFile:item.imagePath
+                         inFileViewerRootedAtPath:item.imagePath.stringByDeletingLastPathComponent];
+    }
+}
+
 - (IBAction)onClickHeader:(NSTableView *)tableView {
-    if (tableView.selectedColumn < 0 && tableView.selectedRow < 0) {
+    NSPoint point = [tableView.headerView convertPoint:[NSEvent mouseLocation]
+                                              fromView:nil];
+    NSInteger column = [tableView.headerView columnAtPoint:point];
+    if (column == 0) {
         id target = self.selectAllCell.target;
         SEL action = self.selectAllCell.action;
         if (target && action && [target respondsToSelector:action]) {
@@ -175,11 +212,13 @@
 - (void)reloadImages
 {
     NSString *path = [RTWorkspace currentWorkspacePath].stringByDeletingLastPathComponent;
+    if (!path || self.isLoading)
+        return;
     
     self.loading = YES;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
-            // Find all png/jpg/jpeg image files
+        // Find all png/jpg/jpeg image files
         NSArray *allowedImageTypes = @[@"png", @"jpg", @"jpeg"];
         
         NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
@@ -201,6 +240,17 @@
     });
 }
 
+- (NSImage *)makeImageForState:(RTImageOptimizeState)state
+{
+    NSString *imageNames[] = {
+        @"NSStatusNone",
+        @"NSStatusPartiallyAvailable",
+        @"NSStatusAvailable",
+        @"NSStatusUnavailable",
+    };
+    return [NSImage imageNamed:imageNames[state]];
+}
+
 #pragma mark - NSTableView
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
@@ -220,30 +270,34 @@
     switch (col) {
         case 0:
         {
-                // cell = [tableView makeViewWithIdentifier:@"Selection" owner:self];
-            NSButton *checkBox = [cell viewWithTag:111];
-            checkBox.state = item.isSelected ? NSOnState : NSOffState;
+            ((NSButton *)cell).state = item.isSelected ? NSOnState : NSOffState;
         }
             break;
         case 1:
-                // cell = [tableView makeViewWithIdentifier:@"ImageName" owner:self];
             cell.imageView.image = item.imageIcon;
             cell.textField.stringValue = item.imageName;
+            cell.toolTip = item.imageName;
             break;
         case 2:
-                // cell = [tableView makeViewWithIdentifier:@"ImagePath" owner:self];
             cell.textField.stringValue = item.imagePath;
+            cell.toolTip = item.imagePath;
             break;
         case 3:
+            cell.textField.objectValue = @(item.imageSize);
+            break;
+        case 4:
+            cell.textField.stringValue = [NSString stringWithFormat:@"%dx%d", (int)item.size.width, (int)item.size.height];
+            break;
+        case 5:
         {
-                // cell = [tableView makeViewWithIdentifier:@"Optimized" owner:self];
-            cell.textField.stringValue = item.hasOptimized ? @"✔︎" : @"✘";
-            cell.textField.textColor = item.hasOptimized ? [NSColor greenColor] : [NSColor redColor];
+            // cell.textField.stringValue = item.hasOptimized ? @"✔︎" : @"✘";
+            cell.imageView.image = [self makeImageForState:item.state];
         }
             break;
         default:
             break;
     }
+
     return cell;
 }
 
@@ -257,7 +311,7 @@
    forTableColumn:(nullable NSTableColumn *)tableColumn
               row:(NSInteger)row
 {
-
+    
 }
 
 /* Sorting support
@@ -266,7 +320,8 @@
 - (void)tableView:(NSTableView *)tableView
 sortDescriptorsDidChange:(NSArray<NSSortDescriptor *> *)oldDescriptors
 {
-    
+    [self.imageItems sortUsingDescriptors:tableView.sortDescriptors];
+    [tableView reloadData];
 }
 
 - (NSString *)tableView:(NSTableView *)tableView
