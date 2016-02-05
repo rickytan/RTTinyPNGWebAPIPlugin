@@ -31,33 +31,16 @@
     return self;
 }
 
-- (void)setTarget:(id)target
-{
-    [super setTarget:target];
-    self.checkBox.target = target;
-}
-
-- (void)setAction:(SEL)action
-{
-    [super setAction:action];
-    self.checkBox.action = action;
-}
-
-- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
+- (void)drawInteriorWithFrame:(NSRect)cellFrame
+                       inView:(NSView *)controlView
 {
     NSSize size = [self.checkBox cellSize];
     
-    NSRect rect = NSMakeRect(cellFrame.origin.x + (cellFrame.size.width - size.width) / 2, cellFrame.origin.y + (cellFrame.size.height - size.height) / 2, size.width, size.height);
+    NSRect rect = NSMakeRect(cellFrame.origin.x + (cellFrame.size.width - size.width) / 2,
+                             cellFrame.origin.y + (cellFrame.size.height - size.height) / 2,
+                             size.width, size.height);
     [self.checkBox drawInteriorWithFrame:rect
                                   inView:controlView];
-}
-
-- (void)drawSortIndicatorWithFrame:(NSRect)cellFrame
-                            inView:(NSView *)controlView
-                         ascending:(BOOL)ascending
-                          priority:(NSInteger)priority
-{
-    
 }
 
 @end
@@ -83,10 +66,7 @@
     
     {
         RTHeaderCell *cell = [[RTHeaderCell alloc] init];
-        cell.target = self;
-        cell.action = @selector(onToggleSelectionAll:);
         self.selectAllCell = cell;
-        
         self.tableView.tableColumns.firstObject.headerCell = cell;
     }
     
@@ -104,19 +84,19 @@
 
 - (void)onToggleSelectionAll:(id)sender
 {
-    if (self.selectAllCell.state == NSOffState) {
+    if (self.selectAllCell.checkBox.state == NSOffState) {
         [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
             item.selected = YES;
         }];
-        self.selectAllCell.state = NSOnState;
+        self.selectAllCell.checkBox.state = NSOnState;
     }
-    else if (self.selectAllCell.state == NSOnState) {
+    else if (self.selectAllCell.checkBox.state == NSOnState) {
         [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
             item.selected = NO;
         }];
-        self.selectAllCell.state = NSOffState;
+        self.selectAllCell.checkBox.state = NSOffState;
     }
-    [self.tableView.headerView setNeedsDisplay:YES];
+    [self.tableView.headerView setNeedsDisplayInRect:[self.tableView.headerView headerRectOfColumn:0]];
     if (self.imageItems.count) {
         [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.imageItems.count - 1)]
                                   columnIndexes:[NSIndexSet indexSetWithIndex:0]];
@@ -128,6 +108,8 @@
     [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
         ((RTImageItem *)self.imageItems[idx]).selected = YES;
     }];
+    [self.tableView reloadDataForRowIndexes:self.tableView.selectedRowIndexes
+                              columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 - (IBAction)onMarkDeselected:(id)sender
@@ -135,6 +117,8 @@
     [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
         ((RTImageItem *)self.imageItems[idx]).selected = NO;
     }];
+    [self.tableView reloadDataForRowIndexes:self.tableView.selectedRowIndexes
+                              columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 - (IBAction)onViewInFinder:(id)sender
@@ -148,16 +132,10 @@
 }
 
 - (IBAction)onClickHeader:(NSTableView *)tableView {
-    NSPoint point = [tableView.headerView convertPoint:[NSEvent mouseLocation]
-                                              fromView:nil];
-    NSInteger column = [tableView.headerView columnAtPoint:point];
-    if (column == 0) {
-        id target = self.selectAllCell.target;
-        SEL action = self.selectAllCell.action;
-        if (target && action && [target respondsToSelector:action]) {
-            [target performSelector:action
-                         withObject:self.selectAllCell];
-        }
+    NSInteger rol = tableView.clickedRow;
+    NSInteger column = tableView.clickedColumn;
+    if (rol < 0 && column == 0) {
+        [self onToggleSelectionAll:self];
     }
 }
 
@@ -301,22 +279,6 @@
     return cell;
 }
 
-#pragma mark -
-#pragma mark ***** Optional Methods *****
-
-/* NOTE: This method is not called for the View Based TableView.
- */
-- (void)tableView:(NSTableView *)tableView
-   setObjectValue:(nullable id)object
-   forTableColumn:(nullable NSTableColumn *)tableColumn
-              row:(NSInteger)row
-{
-    
-}
-
-/* Sorting support
- This is the indication that sorting needs to be done.  Typically the data source will sort its data, reload, and adjust selections.
- */
 - (void)tableView:(NSTableView *)tableView
 sortDescriptorsDidChange:(NSArray<NSSortDescriptor *> *)oldDescriptors
 {

@@ -86,7 +86,6 @@
 			children = (
 				6D30B9821C633F8F002B419A /* RTWorkspace.h */,
 				6D30B9831C633F8F002B419A /* RTWorkspace.m */,
-				6D30B9771C633158002B419A /* Info.plist */,
 				6D30B9741C633158002B419A /* NSObject_Extension.h */,
 				6D30B9751C633158002B419A /* NSObject_Extension.m */,
 				6D30B97D1C633240002B419A /* RTImageController.h */,
@@ -105,6 +104,7 @@
 		6D30B96E1C633158002B419A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6D30B9771C633158002B419A /* Info.plist */,
 				6D30B96F1C633158002B419A /* RTTinyPNGWebAPIPlugin.xcscheme */,
 			);
 			name = "Supporting Files";

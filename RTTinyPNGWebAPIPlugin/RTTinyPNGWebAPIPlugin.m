@@ -96,17 +96,15 @@
 - (void)onProjectChanged:(NSNotification *)notif
 {
     [self.imageController close];
-    self.imageController = nil;
     
     self.actionMenuItem.enabled = YES;
 }
 
 - (void)onProjectClose:(NSNotification *)notif
 {
-    [self.imageController close];
-    self.imageController = nil;
-    
     self.actionMenuItem.enabled = NO;
+    
+    [self.imageController close];
 }
 
 - (void)dealloc
