@@ -16,6 +16,7 @@
 		6D30B9811C633240002B419A /* RTImageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D30B97F1C633240002B419A /* RTImageController.xib */; };
 		6D30B9851C633F8F002B419A /* RTWorkspace.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D30B9831C633F8F002B419A /* RTWorkspace.m */; };
 		6D30B9881C63426A002B419A /* RTImageItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D30B9871C63426A002B419A /* RTImageItem.m */; };
+		6DF5F7C61C6447680095CB95 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF5F7C51C6447680095CB95 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		6D30B9841C633F8F002B419A /* XcodeIDE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XcodeIDE.h; sourceTree = "<group>"; };
 		6D30B9861C63426A002B419A /* RTImageItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTImageItem.h; sourceTree = "<group>"; };
 		6D30B9871C63426A002B419A /* RTImageItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTImageItem.m; sourceTree = "<group>"; };
+		6DF5F7C51C6447680095CB95 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DF5F7C61C6447680095CB95 /* QuartzCore.framework in Frameworks */,
 				6D30B96A1C633158002B419A /* AppKit.framework in Frameworks */,
 				6D30B96C1C633158002B419A /* Foundation.framework in Frameworks */,
 			);
@@ -71,6 +74,7 @@
 		6D30B9681C633158002B419A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6DF5F7C51C6447680095CB95 /* QuartzCore.framework */,
 				6D30B9691C633158002B419A /* AppKit.framework */,
 				6D30B96B1C633158002B419A /* Foundation.framework */,
 			);
@@ -307,6 +311,7 @@
 				6D30B97C1C633158002B419A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

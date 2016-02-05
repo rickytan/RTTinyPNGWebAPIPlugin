@@ -43,10 +43,9 @@
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
-    NSRect drawRect = [self drawingRectForBounds:cellFrame];
-    NSLog(@"%@ : %@", NSStringFromRect(drawRect), NSStringFromRect(cellFrame));
+    NSSize size = [self.checkBox cellSize];
     
-    NSRect rect = NSMakeRect(cellFrame.origin.x + (cellFrame.size.width - 14) / 2, cellFrame.origin.y + (cellFrame.size.height - 14) / 2, 14, 14);
+    NSRect rect = NSMakeRect(cellFrame.origin.x + (cellFrame.size.width - size.width) / 2, cellFrame.origin.y + (cellFrame.size.height - size.height) / 2, size.width, size.height);
     [self.checkBox drawInteriorWithFrame:rect
                                   inView:controlView];
 }
@@ -84,6 +83,13 @@
     [self reloadImages];
 }
 
+- (void)showWindow:(id)sender {
+    [super showWindow:sender];
+    
+    if (self.windowLoaded)
+        [self reloadImages];
+}
+
 #pragma mark - Actions
 
 - (void)onToggleSelectionAll:(id)sender
@@ -92,6 +98,7 @@
         [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
             self.selectAllCell.state = NSOnState;
             item.selected = YES;
+            
         }];
     }
     else if (self.selectAllCell.state == NSOnState) {
@@ -100,12 +107,14 @@
             item.selected = NO;
         }];
     }
-    [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.imageItems.count - 1)]
-                              columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+    if (self.imageItems.count) {
+        [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.imageItems.count - 1)]
+                                  columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+    }
 }
 
 - (IBAction)onClickHeader:(NSTableView *)tableView {
-    if (tableView.selectedColumn >= 0 && tableView.selectedRow < 0) {
+    if (tableView.selectedColumn < 0 && tableView.selectedRow < 0) {
         id target = self.selectAllCell.target;
         SEL action = self.selectAllCell.action;
         if (target && action && [target respondsToSelector:action]) {
@@ -207,6 +216,7 @@
     RTImageItem *item = self.imageItems[row];
     NSTableCellView *cell = [tableView makeViewWithIdentifier:tableColumn.identifier
                                                         owner:self];
+    cell.wantsLayer = YES;
     switch (col) {
         case 0:
         {
@@ -227,7 +237,7 @@
         case 3:
         {
                 // cell = [tableView makeViewWithIdentifier:@"Optimized" owner:self];
-            cell.textField.stringValue = item.hasOptimized ? @"√" : @"x";
+            cell.textField.stringValue = item.hasOptimized ? @"✔︎" : @"✘";
             cell.textField.textColor = item.hasOptimized ? [NSColor greenColor] : [NSColor redColor];
         }
             break;

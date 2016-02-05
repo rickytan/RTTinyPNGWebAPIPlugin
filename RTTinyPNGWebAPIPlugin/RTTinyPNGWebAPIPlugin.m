@@ -32,20 +32,22 @@
         self.imageController = [[RTImageController alloc] initWithWindowNibName:NSStringFromClass([RTImageController class])];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didApplicationFinishLaunchingNotification:)
+                                                 selector:@selector(onLaunch:)
                                                      name:NSApplicationDidFinishLaunchingNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(onClose:)
+                                                     name:NSApplicationWillResignActiveNotification
                                                    object:nil];
     }
     return self;
 }
 
-- (void)didApplicationFinishLaunchingNotification:(NSNotification*)noti
+- (void)onLaunch:(NSNotification*)notif
 {
     //removeObserver
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationDidFinishLaunchingNotification object:nil];
     
-    // Create menu items, initialize UI, etc.
-    // Sample Menu Item:
     NSMenuItem *menuItem = [[NSApp mainMenu] itemWithTitle:@"File"];
     if (menuItem) {
         [[menuItem submenu] addItem:[NSMenuItem separatorItem]];
@@ -56,6 +58,11 @@
         [actionMenuItem setTarget:self.imageController];
         [[menuItem submenu] addItem:actionMenuItem];
     }
+}
+
+- (void)onClose:(NSNotification *)notif
+{
+    [self.imageController close];
 }
 
 - (void)dealloc
