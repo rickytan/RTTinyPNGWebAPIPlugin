@@ -49,6 +49,8 @@
 @property (weak) IBOutlet NSTableView *tableView;
 @property (weak) IBOutlet NSTextField *apiKeyField;
 @property (weak) IBOutlet NSProgressIndicator *progressIndicator;
+@property (weak) IBOutlet NSButton *startButton;
+@property (weak) IBOutlet NSButton *cancelButton;
 
 @property (strong) RTHeaderCell *selectAllCell;
 
@@ -154,6 +156,10 @@
         RTImageItem *item = self.imageItems[row];
         item.selected = !item.isSelected;
     }
+}
+
+- (IBAction)onStart:(id)sender {
+    
 }
 
 #pragma mark - Methods

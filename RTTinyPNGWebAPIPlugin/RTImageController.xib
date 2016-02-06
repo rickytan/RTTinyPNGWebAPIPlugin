@@ -17,7 +17,7 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="F0z-JX-Cv5">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="196" y="240" width="900" height="600"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
             <value key="minSize" type="size" width="400" height="300"/>
             <view key="contentView" id="se5-gp-TjO">
                 <rect key="frame" x="0.0" y="0.0" width="900" height="600"/>
@@ -50,6 +50,22 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="D5c-6h-cMl">
+                        <rect key="frame" x="126" y="531" width="50" height="26"/>
+                        <popUpButtonCell key="cell" type="push" title="2" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" inset="2" selectedItem="IfA-We-ZR3" id="AdA-17-QUs">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" id="g8R-NN-L8r">
+                                <items>
+                                    <menuItem title="1" id="dCE-Ft-cAy"/>
+                                    <menuItem title="2" state="on" id="IfA-We-ZR3" userLabel="2"/>
+                                    <menuItem title="3" id="zfR-gL-sdq" userLabel="3"/>
+                                    <menuItem title="5" id="MTB-xg-cil" userLabel="5"/>
+                                    <menuItem title="10" id="Xok-bp-NiI"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                    </popUpButton>
                     <progressIndicator hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="eLU-XO-bTL">
                         <rect key="frame" x="864" y="571" width="16" height="16"/>
                     </progressIndicator>
@@ -329,37 +345,42 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>
-                    <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="D5c-6h-cMl">
-                        <rect key="frame" x="126" y="531" width="50" height="26"/>
-                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" inset="2" id="AdA-17-QUs">
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Z3F-wf-mWg">
+                        <rect key="frame" x="735" y="529" width="70" height="32"/>
+                        <buttonCell key="cell" type="push" title="Start" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cOy-U3-HLu">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
-                            <menu key="menu" id="g8R-NN-L8r">
-                                <items>
-                                    <menuItem title="1" id="dCE-Ft-cAy"/>
-                                    <menuItem title="2" id="IfA-We-ZR3" userLabel="2"/>
-                                    <menuItem title="3" id="zfR-gL-sdq" userLabel="3"/>
-                                    <menuItem title="5" id="MTB-xg-cil" userLabel="5"/>
-                                    <menuItem title="10" id="Xok-bp-NiI"/>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                    </popUpButton>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9XN-HI-lSL">
+                        <rect key="frame" x="803" y="529" width="83" height="32"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Hzp-K8-nZH">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="2Pw-Zd-OxH" firstAttribute="leading" secondItem="ec2-NF-sxU" secondAttribute="trailing" constant="8" id="1qB-JA-MUk"/>
                     <constraint firstAttribute="bottom" secondItem="mo2-Sx-JmP" secondAttribute="bottom" id="4tm-jA-pLy"/>
                     <constraint firstItem="pyW-7i-R9I" firstAttribute="trailing" secondItem="ec2-NF-sxU" secondAttribute="trailing" id="6rZ-pH-FKs"/>
+                    <constraint firstItem="9XN-HI-lSL" firstAttribute="leading" secondItem="Z3F-wf-mWg" secondAttribute="trailing" constant="10" id="7jW-p3-ZhO"/>
                     <constraint firstAttribute="trailing" secondItem="mo2-Sx-JmP" secondAttribute="trailing" id="9WU-Bq-d52"/>
                     <constraint firstItem="2Pw-Zd-OxH" firstAttribute="centerY" secondItem="ec2-NF-sxU" secondAttribute="centerY" id="Bpb-R7-gP3"/>
                     <constraint firstItem="eLU-XO-bTL" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="13" id="GwE-7D-Rln"/>
                     <constraint firstItem="ec2-NF-sxU" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="36" id="I5V-R5-oGS"/>
                     <constraint firstItem="pyW-7i-R9I" firstAttribute="top" secondItem="ec2-NF-sxU" secondAttribute="bottom" constant="10" id="Kj9-rJ-IgJ"/>
+                    <constraint firstItem="mo2-Sx-JmP" firstAttribute="top" secondItem="9XN-HI-lSL" secondAttribute="bottom" constant="6" id="QVr-ia-NCm"/>
+                    <constraint firstItem="mo2-Sx-JmP" firstAttribute="top" secondItem="Z3F-wf-mWg" secondAttribute="bottom" constant="6" id="Rhx-5z-tv9"/>
                     <constraint firstItem="D5c-6h-cMl" firstAttribute="centerY" secondItem="pyW-7i-R9I" secondAttribute="centerY" id="UW5-Zx-qCw"/>
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="70" id="Zpd-it-sai"/>
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" id="aJ8-0r-qfg"/>
                     <constraint firstAttribute="trailing" secondItem="eLU-XO-bTL" secondAttribute="trailing" constant="20" id="edi-nU-hSx"/>
                     <constraint firstItem="D5c-6h-cMl" firstAttribute="leading" secondItem="pyW-7i-R9I" secondAttribute="trailing" constant="8" id="g1r-vi-Rk4"/>
+                    <constraint firstAttribute="trailing" secondItem="9XN-HI-lSL" secondAttribute="trailing" constant="20" id="ovn-2w-cb9"/>
                     <constraint firstItem="ec2-NF-sxU" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" id="td0-Nk-cUo"/>
                 </constraints>
             </view>
