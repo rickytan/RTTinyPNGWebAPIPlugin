@@ -44,7 +44,10 @@ static NSString *const TINY_PNG_HOST = @"https://api.tinify.com/shrink";
                                                        timeoutInterval:8.f];
     request.HTTPMethod = @"POST";
     request.HTTPBodyStream = [[NSInputStream alloc] initWithFileAtPath:self.imagePath];
-    [request setValue:[NSString stringWithFormat:@"Basic %@", [[[NSString stringWithFormat:@"%@:%@", @"api", self.apikey] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithCarriageReturn]]
+    
+    NSString *base64encodedKey = [[[NSString stringWithFormat:@"api:%@", self.apikey] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithCarriageReturn];
+    NSString *auth = [NSString stringWithFormat:@"Basic %@", base64encodedKey];
+    [request setValue:auth
    forHTTPHeaderField:@"Authorization"];
 }
 
