@@ -127,8 +127,8 @@ static NSOperationQueue *RTImageCompressingQueue() {
     }
     [self.tableView.headerView setNeedsDisplayInRect:[self.tableView.headerView headerRectOfColumn:0]];
     if (self.imageItems.count) {
-        [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.imageItems.count - 1)]
-                                  columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+        [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:[self.tableView rowsInRect:self.tableView.visibleRect]]
+                                  columnIndexes:[NSIndexSet indexSetWithIndex:[self.tableView columnWithIdentifier:@"Selection"]]];
     }
 }
 
@@ -243,7 +243,9 @@ static NSOperationQueue *RTImageCompressingQueue() {
                     obj.state = RTImageOptimizeStateFailed;
                     if (json) {
                         [RTImageCompressingQueue() cancelAllOperations];
-                        NSBeginAlertSheet(json[@"error"] ?: @"Unknown error", @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"]);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            NSBeginAlertSheet(json[@"error"] ?: @"Unknown error", @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"]);
+                        });
                     }
                 }
                 else if (response.statusCode == 201) {
@@ -256,15 +258,18 @@ static NSOperationQueue *RTImageCompressingQueue() {
                         }
                     }
                 }
+                else {
+                    obj.state = RTImageOptimizeStateFailed;
+                }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:idx]
-                                              columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.tableColumns.count - 1)]];
+                                              columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.tableColumns.count)]];
                 });
             }];
             
             obj.state = RTImageOptimizeStatePending;
             [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:idx]
-                                      columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.tableColumns.count - 1)]];
+                                      columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.tableColumns.count)]];
         }
     }];
 }
@@ -302,10 +307,12 @@ static NSOperationQueue *RTImageCompressingQueue() {
 {
     _loading = loading;
     if (_loading) {
+        self.startButton.enabled = NO;
         self.progressIndicator.hidden = NO;
         [self.progressIndicator startAnimation:self];
     }
     else {
+        self.startButton.enabled = YES;
         [self.progressIndicator stopAnimation:self];
         self.progressIndicator.hidden = YES;
     }
@@ -327,15 +334,23 @@ static NSOperationQueue *RTImageCompressingQueue() {
         NSString *relaventPath = nil;
         
         [self.imageItems removeAllObjects];
+
+        BOOL allSelected = YES;
         while (relaventPath = [enumerator nextObject]) {
             if ([allowedImageTypes containsObject:relaventPath.pathExtension.lowercaseString]) {
-                [self.imageItems addObject:[RTImageItem itemWithPath:[path stringByAppendingPathComponent:relaventPath]]];
+                RTImageItem *item = [RTImageItem itemWithPath:[path stringByAppendingPathComponent:relaventPath]];
+                item.selected = !item.hasOptimized;
+                if (!item.isSelected) {
+                    allSelected = NO;
+                }
+                [self.imageItems addObject:item];
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             self.loading = NO;
             self.selectAllCell.state = NSOffState;
-            [self onToggleSelectionAll:self];
+            if (allSelected)
+                [self onToggleSelectionAll:self];
             
             [self.tableView reloadData];
         });
@@ -368,7 +383,6 @@ static NSOperationQueue *RTImageCompressingQueue() {
     RTImageItem *item = self.imageItems[row];
     NSTableCellView *cell = [tableView makeViewWithIdentifier:tableColumn.identifier
                                                         owner:self];
-    cell.wantsLayer = YES;
     switch (col) {
         case 0:
         {
@@ -388,9 +402,12 @@ static NSOperationQueue *RTImageCompressingQueue() {
             cell.textField.objectValue = @(item.imageSize);
             break;
         case 4:
-            cell.textField.stringValue = [NSString stringWithFormat:@"%dx%d", (int)item.size.width, (int)item.size.height];
+            cell.textField.objectValue = @(item.imageSizeOptimized);
             break;
         case 5:
+            cell.textField.stringValue = [NSString stringWithFormat:@"%dx%d", (int)item.size.width, (int)item.size.height];
+            break;
+        case 6:
         {
             // cell.textField.stringValue = item.hasOptimized ? @"✔︎" : @"✘";
             cell.imageView.image = [self makeImageForState:item.state];
