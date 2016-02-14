@@ -51,15 +51,28 @@
 @property (weak) IBOutlet NSProgressIndicator *progressIndicator;
 @property (weak) IBOutlet NSButton *startButton;
 @property (weak) IBOutlet NSButton *cancelButton;
+@property (weak) IBOutlet NSPopUpButton *concurrencyButton;
 
 @property (strong) RTHeaderCell *selectAllCell;
 
 @property (nonatomic, strong) NSMutableArray *imageItems;
-@property (nonatomic, strong) NSOperationQueue *imageCompressingQueue;
 @property (nonatomic, assign, getter=isLoading) BOOL loading;
+@property (nonatomic, assign, getter=isProcessing) BOOL processing;
 @end
 
 @implementation RTImageController
+
+static NSString *const TINY_PNG_HOST = @"https://api.tinify.com/shrink";
+static void *observingContext = &observingContext;
+static NSOperationQueue *RTImageCompressingQueue() {
+    static NSOperationQueue * _theQueue = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _theQueue = [[NSOperationQueue alloc] init];
+        _theQueue.maxConcurrentOperationCount = 2;
+    });
+    return _theQueue;
+}
 
 - (void)windowDidLoad {
     [super windowDidLoad];
@@ -78,8 +91,22 @@
 - (void)showWindow:(id)sender {
     [super showWindow:sender];
     
-    if (self.windowLoaded)
+    if (self.windowLoaded && !self.isProcessing)
         [self reloadImages];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSString *,id> *)change
+                       context:(void *)context
+{
+    if (context == observingContext) {
+        if ([@"operationCount" isEqualToString:keyPath]) {
+            if (RTImageCompressingQueue().operationCount == 0) {
+                self.processing = NO;
+            }
+        }
+    }
 }
 
 #pragma mark - Actions
@@ -150,6 +177,11 @@
     }
 }
 
+- (IBAction)onConcurrencyChanged:(id)sender {
+    NSInteger value = [self.concurrencyButton.selectedItem.title integerValue];
+    RTImageCompressingQueue().maxConcurrentOperationCount = value;
+}
+
 - (IBAction)onSelect:(NSButton *)checkBox {
     NSInteger row = [self.tableView rowForView:checkBox];
     if (row >= 0) {
@@ -158,11 +190,105 @@
     }
 }
 
+- (void)sheetDidEnd:(NSWindow *)sheet
+         returnCode:(NSInteger)returnCode
+        contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertAlternateReturn) {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://tinypng.com/developers"]];
+    }
+}
+
 - (IBAction)onStart:(id)sender {
+    NSString *apiKey = [[[NSUserDefaultsController sharedUserDefaultsController] defaults] stringForKey:@"TINY_PNG_APIKEY"];
+    if (apiKey.length <= 0) {
+        NSBeginAlertSheet(@"API key required!", @"OK", @"Show me where to find", nil, self.window, self, @selector(sheetDidEnd:returnCode:contextInfo:), NULL, NULL, @"Please input your Api key and HIT ENTER");
+        return;
+    }
     
+    NSString *base64encodedKey = [[[NSString stringWithFormat:@"api:%@", apiKey] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithCarriageReturn];
+    NSString *auth = [NSString stringWithFormat:@"Basic %@", base64encodedKey];
+    
+    self.processing = YES;
+    
+    [RTImageCompressingQueue() addObserver:self
+                                forKeyPath:@"operationCount"
+                                   options:NSKeyValueObservingOptionNew
+                                   context:observingContext];
+    
+    [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.selected) {
+            [RTImageCompressingQueue() addOperationWithBlock:^{
+                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:TINY_PNG_HOST]
+                                                                       cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                                   timeoutInterval:8.f];
+                request.HTTPMethod = @"POST";
+                [request setValue:auth
+               forHTTPHeaderField:@"Authorization"];
+                request.HTTPBodyStream = [NSInputStream inputStreamWithFileAtPath:obj.imagePath];
+                
+                // Call web api synchronizely
+                
+                NSHTTPURLResponse *response = nil;
+                NSError *error = nil;
+                NSData *data = [NSURLConnection sendSynchronousRequest:request
+                                                     returningResponse:&response
+                                                                 error:&error];
+                id json = nil;
+                if (data) {
+                    json = [NSJSONSerialization JSONObjectWithData:data
+                                                           options:0
+                                                             error:NULL];
+                }
+                if (error) {
+                    obj.state = RTImageOptimizeStateFailed;
+                    if (json) {
+                        [RTImageCompressingQueue() cancelAllOperations];
+                        NSBeginAlertSheet(json[@"error"] ?: @"Unknown error", @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"]);
+                    }
+                }
+                else if (response.statusCode == 201) {
+                    if (json) {
+                        obj.imageSizeOptimized = [json[@"output"][@"size"] integerValue];
+                        NSURL *compressURL = [NSURL URLWithString:json[@"output"][@"url"]];
+                        if (compressURL && [[NSData dataWithContentsOfURL:compressURL] writeToFile:obj.imagePath
+                                                                                        atomically:YES]) {
+                            obj.state = RTImageOptimizeStateOptimized;
+                        }
+                    }
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:idx]
+                                              columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.tableColumns.count - 1)]];
+                });
+            }];
+            
+            obj.state = RTImageOptimizeStatePending;
+            [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:idx]
+                                      columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.tableColumns.count - 1)]];
+        }
+    }];
+}
+
+- (IBAction)onCancel:(id)sender {
+    self.processing = NO;
 }
 
 #pragma mark - Methods
+
+- (void)setProcessing:(BOOL)processing
+{
+    _processing = processing;
+    if (_processing) {
+        self.startButton.enabled = NO;
+        self.concurrencyButton.enabled = NO;
+        self.tableView.enabled = NO;
+    }
+    else {
+        self.startButton.enabled = YES;
+        self.concurrencyButton.enabled = YES;
+        self.tableView.enabled = YES;
+    }
+}
 
 - (NSMutableArray *)imageItems
 {
@@ -170,14 +296,6 @@
         _imageItems = [NSMutableArray array];
     }
     return _imageItems;
-}
-
-- (NSOperationQueue *)imageCompressingQueue
-{
-    if (!_imageCompressingQueue) {
-        _imageCompressingQueue = [[NSOperationQueue alloc] init];
-    }
-    return _imageCompressingQueue;
 }
 
 - (void)setLoading:(BOOL)loading
@@ -196,7 +314,7 @@
 - (void)reloadImages
 {
     NSString *path = [RTWorkspace currentWorkspacePath].stringByDeletingLastPathComponent;
-    if (!path || self.isLoading)
+    if (!path || self.isLoading || self.isProcessing)
         return;
     
     self.loading = YES;
@@ -281,7 +399,7 @@
         default:
             break;
     }
-
+    
     return cell;
 }
 

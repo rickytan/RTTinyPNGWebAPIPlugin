@@ -12,6 +12,7 @@
 #import "RTImageItem.h"
 
 static const char *RT_IMAGE_OPTIMIZED_KEY = "com.tinypng.hasOptimized";
+static const char *RT_IMAGE_ORIGIN_SIZE_KEY = "com.tinypng.originSize";
 
 @implementation RTImageItem
 @synthesize optimized = _optimized;
@@ -34,6 +35,9 @@ static const char *RT_IMAGE_OPTIMIZED_KEY = "com.tinypng.hasOptimized";
             self.lastUpdateDate = [attr fileModificationDate];
             
             if (self.hasOptimized) {
+                NSInteger size = 0;
+                getxattr(self.imagePath.UTF8String, RT_IMAGE_ORIGIN_SIZE_KEY, &size, sizeof(size), 0, 0);
+                self.imageSize = size;
                 self.imageSizeOptimized = [attr fileSize];
                 _state = RTImageOptimizeStateOptimized;
             }
@@ -73,7 +77,7 @@ static const char *RT_IMAGE_OPTIMIZED_KEY = "com.tinypng.hasOptimized";
                                                                               error:NULL];
         if (attr) {
             self.lastUpdateDate = [attr fileModificationDate];
-            self.imageSizeOptimized = [attr fileSize];
+            self.imageSize = [attr fileSize];
         }
     }
 }
@@ -90,6 +94,9 @@ static const char *RT_IMAGE_OPTIMIZED_KEY = "com.tinypng.hasOptimized";
             if (self.imagePath) {
                 BOOL optimized = YES;
                 setxattr(self.imagePath.UTF8String, RT_IMAGE_OPTIMIZED_KEY, &optimized, sizeof(optimized), 0, 0);
+                NSInteger size = self.imageSize;
+                setxattr(self.imagePath.UTF8String, RT_IMAGE_ORIGIN_SIZE_KEY, &size, sizeof(size), 0, 0);
+                
                 NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:self.imagePath
                                                                                       error:NULL];
                 if (attr) {

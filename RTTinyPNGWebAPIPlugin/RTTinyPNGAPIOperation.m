@@ -15,6 +15,7 @@ static NSString *const TINY_PNG_HOST = @"https://api.tinify.com/shrink";
 @property (nonatomic, strong) NSString *apikey;
 @property (nonatomic, copy) NSString *imagePath;
 @property (nonatomic, copy) NSString *savePath;
+@property (nonatomic, strong) NSOutputStream *writeStream;
 @end
 
 @implementation RTTinyPNGAPIOperation
@@ -49,6 +50,36 @@ static NSString *const TINY_PNG_HOST = @"https://api.tinify.com/shrink";
     NSString *auth = [NSString stringWithFormat:@"Basic %@", base64encodedKey];
     [request setValue:auth
    forHTTPHeaderField:@"Authorization"];
+    request.HTTPBodyStream = [NSInputStream inputStreamWithFileAtPath:self.imagePath];
+
+    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request
+                                                                delegate:self];
+    [connection start];
+}
+
+#pragma mark - NSURLConnection Delegate
+
+- (void)connection:(NSURLConnection *)connection
+didReceiveResponse:(NSURLResponse *)response
+{
+    NSLog(@"%@", response);
+}
+
+- (void)connection:(NSURLConnection *)connection
+    didReceiveData:(NSData *)data
+{
+    NSLog(@"%@", data);
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    NSLog(@"Finished!");
+}
+
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error
+{
+    NSLog(@"%@", error);
 }
 
 @end

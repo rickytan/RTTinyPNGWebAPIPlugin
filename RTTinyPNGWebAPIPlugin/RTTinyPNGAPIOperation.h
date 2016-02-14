@@ -9,9 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @interface RTTinyPNGAPIOperation : NSOperation
+@property (nonatomic, strong) id userObject;
 
 - (instancetype)initWithAPIKey:(NSString *)apikey
                      imagePath:(NSString *)imagePath;
+
 - (instancetype)initWithAPIKey:(NSString *)apikey
                      imagePath:(NSString *)imagePath
                       savePath:(NSString *)savePath;
