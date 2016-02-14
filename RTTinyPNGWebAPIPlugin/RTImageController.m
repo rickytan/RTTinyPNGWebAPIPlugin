@@ -190,12 +190,9 @@ static NSOperationQueue *RTImageCompressingQueue() {
     }
 }
 
-- (void)sheetDidEnd:(NSWindow *)sheet
-         returnCode:(NSInteger)returnCode
-        contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertAlternateReturn) {
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://tinypng.com/developers"]];
-    }
+- (IBAction)onShowHelp:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://tinypng.com/developers"]];
 }
 
 - (IBAction)onStart:(id)sender {
@@ -279,6 +276,15 @@ static NSOperationQueue *RTImageCompressingQueue() {
 }
 
 #pragma mark - Methods
+
+
+- (void)sheetDidEnd:(NSWindow *)sheet
+         returnCode:(NSInteger)returnCode
+        contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertAlternateReturn) {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://tinypng.com/developers"]];
+    }
+}
 
 - (void)setProcessing:(BOOL)processing
 {

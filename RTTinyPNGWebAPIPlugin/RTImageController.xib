@@ -417,6 +417,16 @@ Gw
                             <binding destination="9V9-lj-OI6" name="value" keyPath="values.TINY_PNG_APIKEY" id="2vj-cJ-mjt"/>
                         </connections>
                     </textField>
+                    <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wSj-NY-Jt4">
+                        <rect key="frame" x="424" y="557" width="25" height="25"/>
+                        <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nYB-wx-zvZ">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="onShowHelp:" target="-2" id="RiV-LX-Pph"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="2Pw-Zd-OxH" firstAttribute="leading" secondItem="ec2-NF-sxU" secondAttribute="trailing" constant="8" id="1qB-JA-MUk"/>
@@ -428,6 +438,7 @@ Gw
                     <constraint firstItem="eLU-XO-bTL" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="13" id="GwE-7D-Rln"/>
                     <constraint firstItem="ec2-NF-sxU" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="36" id="I5V-R5-oGS"/>
                     <constraint firstItem="pyW-7i-R9I" firstAttribute="top" secondItem="ec2-NF-sxU" secondAttribute="bottom" constant="10" id="Kj9-rJ-IgJ"/>
+                    <constraint firstItem="2Pw-Zd-OxH" firstAttribute="centerY" secondItem="wSj-NY-Jt4" secondAttribute="centerY" id="PDz-Z0-eOr"/>
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="top" secondItem="9XN-HI-lSL" secondAttribute="bottom" constant="6" id="QVr-ia-NCm"/>
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="top" secondItem="Z3F-wf-mWg" secondAttribute="bottom" constant="6" id="Rhx-5z-tv9"/>
                     <constraint firstItem="D5c-6h-cMl" firstAttribute="centerY" secondItem="pyW-7i-R9I" secondAttribute="centerY" id="UW5-Zx-qCw"/>
@@ -435,6 +446,7 @@ Gw
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" id="aJ8-0r-qfg"/>
                     <constraint firstAttribute="trailing" secondItem="eLU-XO-bTL" secondAttribute="trailing" constant="20" id="edi-nU-hSx"/>
                     <constraint firstItem="D5c-6h-cMl" firstAttribute="leading" secondItem="pyW-7i-R9I" secondAttribute="trailing" constant="8" id="g1r-vi-Rk4"/>
+                    <constraint firstItem="wSj-NY-Jt4" firstAttribute="leading" secondItem="2Pw-Zd-OxH" secondAttribute="trailing" constant="8" id="kDz-gu-4Uf"/>
                     <constraint firstAttribute="trailing" secondItem="9XN-HI-lSL" secondAttribute="trailing" constant="20" id="ovn-2w-cb9"/>
                     <constraint firstItem="ec2-NF-sxU" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" id="td0-Nk-cUo"/>
                 </constraints>
