@@ -39,6 +39,10 @@ static const char *RT_IMAGE_ORIGIN_SIZE_KEY = "com.tinypng.originSize";
                 getxattr(self.imagePath.UTF8String, RT_IMAGE_ORIGIN_SIZE_KEY, &size, sizeof(size), 0, 0);
                 self.imageSize = size;
                 self.imageSizeOptimized = [attr fileSize];
+                
+                // If fail to get origin size, use optimized size instead
+                if (!size)
+                    self.imageSize = self.imageSizeOptimized;
                 _state = RTImageOptimizeStateOptimized;
             }
             else {

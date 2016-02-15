@@ -12,6 +12,7 @@
                 <outlet property="concurrencyButton" destination="D5c-6h-cMl" id="mNe-hx-HS8"/>
                 <outlet property="progressIndicator" destination="eLU-XO-bTL" id="7Kj-pc-jH9"/>
                 <outlet property="startButton" destination="Z3F-wf-mWg" id="WKV-pe-3AN"/>
+                <outlet property="statsLabel" destination="2Ds-ns-yF6" id="vgg-iG-h3k"/>
                 <outlet property="tableView" destination="Ze6-1Y-Pfw" id="ZI2-eI-wGz"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
@@ -45,13 +46,13 @@
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="D5c-6h-cMl">
                         <rect key="frame" x="126" y="531" width="50" height="26"/>
-                        <popUpButtonCell key="cell" type="push" title="2" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" inset="2" selectedItem="IfA-We-ZR3" id="AdA-17-QUs">
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" inset="2" id="AdA-17-QUs">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" id="g8R-NN-L8r">
                                 <items>
                                     <menuItem title="1" id="dCE-Ft-cAy"/>
-                                    <menuItem title="2" state="on" id="IfA-We-ZR3" userLabel="2"/>
+                                    <menuItem title="2" id="IfA-We-ZR3" userLabel="2"/>
                                     <menuItem title="3" id="zfR-gL-sdq" userLabel="3"/>
                                     <menuItem title="5" id="MTB-xg-cil" userLabel="5"/>
                                     <menuItem title="10" id="Xok-bp-NiI"/>
@@ -427,6 +428,14 @@ Gw
                             <action selector="onShowHelp:" target="-2" id="RiV-LX-Pph"/>
                         </connections>
                     </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2Ds-ns-yF6">
+                        <rect key="frame" x="220" y="536" width="4" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" usesSingleLineMode="YES" id="jdk-Ny-fXF">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
                 <constraints>
                     <constraint firstItem="2Pw-Zd-OxH" firstAttribute="leading" secondItem="ec2-NF-sxU" secondAttribute="trailing" constant="8" id="1qB-JA-MUk"/>
@@ -442,12 +451,14 @@ Gw
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="top" secondItem="9XN-HI-lSL" secondAttribute="bottom" constant="6" id="QVr-ia-NCm"/>
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="top" secondItem="Z3F-wf-mWg" secondAttribute="bottom" constant="6" id="Rhx-5z-tv9"/>
                     <constraint firstItem="D5c-6h-cMl" firstAttribute="centerY" secondItem="pyW-7i-R9I" secondAttribute="centerY" id="UW5-Zx-qCw"/>
+                    <constraint firstItem="2Ds-ns-yF6" firstAttribute="leading" secondItem="D5c-6h-cMl" secondAttribute="trailing" constant="49" id="ZSp-Y7-M9d"/>
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="70" id="Zpd-it-sai"/>
                     <constraint firstItem="mo2-Sx-JmP" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" id="aJ8-0r-qfg"/>
                     <constraint firstAttribute="trailing" secondItem="eLU-XO-bTL" secondAttribute="trailing" constant="20" id="edi-nU-hSx"/>
                     <constraint firstItem="D5c-6h-cMl" firstAttribute="leading" secondItem="pyW-7i-R9I" secondAttribute="trailing" constant="8" id="g1r-vi-Rk4"/>
                     <constraint firstItem="wSj-NY-Jt4" firstAttribute="leading" secondItem="2Pw-Zd-OxH" secondAttribute="trailing" constant="8" id="kDz-gu-4Uf"/>
                     <constraint firstAttribute="trailing" secondItem="9XN-HI-lSL" secondAttribute="trailing" constant="20" id="ovn-2w-cb9"/>
+                    <constraint firstItem="2Ds-ns-yF6" firstAttribute="centerY" secondItem="pyW-7i-R9I" secondAttribute="centerY" id="qFy-Up-RBr"/>
                     <constraint firstItem="ec2-NF-sxU" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" id="td0-Nk-cUo"/>
                 </constraints>
             </view>

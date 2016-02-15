@@ -9,5 +9,5 @@
 #import <Cocoa/Cocoa.h>
 
 @interface RTImageController : NSWindowController
-
+- (void)clearImageItems;
 @end

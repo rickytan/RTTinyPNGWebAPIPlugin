@@ -95,6 +95,7 @@
 
 - (void)onProjectChanged:(NSNotification *)notif
 {
+    [self.imageController clearImageItems];
     [self.imageController close];
     
     self.actionMenuItem.enabled = YES;
@@ -104,6 +105,7 @@
 {
     self.actionMenuItem.enabled = NO;
     
+    [self.imageController clearImageItems];
     [self.imageController close];
 }
 

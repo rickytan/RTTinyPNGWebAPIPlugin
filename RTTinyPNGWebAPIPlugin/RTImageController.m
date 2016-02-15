@@ -52,10 +52,12 @@
 @property (weak) IBOutlet NSButton *startButton;
 @property (weak) IBOutlet NSButton *cancelButton;
 @property (weak) IBOutlet NSPopUpButton *concurrencyButton;
+@property (weak) IBOutlet NSTextField *statsLabel;
 
 @property (strong) RTHeaderCell *selectAllCell;
 
 @property (nonatomic, strong) NSMutableArray *imageItems;
+@property (assign) NSUInteger totalBytes, optimizedTotalBytes;
 @property (nonatomic, assign, getter=isLoading) BOOL loading;
 @property (nonatomic, assign, getter=isProcessing) BOOL processing;
 @end
@@ -91,7 +93,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
 - (void)showWindow:(id)sender {
     [super showWindow:sender];
     
-    if (self.windowLoaded && !self.isProcessing)
+    if (self.isWindowLoaded)
         [self reloadImages];
 }
 
@@ -114,40 +116,40 @@ static NSOperationQueue *RTImageCompressingQueue() {
 - (void)onToggleSelectionAll:(id)sender
 {
     if (self.selectAllCell.checkBox.state == NSOffState) {
-        [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL *stop) {
             item.selected = YES;
         }];
         self.selectAllCell.checkBox.state = NSOnState;
     }
     else if (self.selectAllCell.checkBox.state == NSOnState) {
-        [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *item, NSUInteger idx, BOOL *stop) {
             item.selected = NO;
         }];
         self.selectAllCell.checkBox.state = NSOffState;
     }
     [self.tableView.headerView setNeedsDisplayInRect:[self.tableView.headerView headerRectOfColumn:0]];
     if (self.imageItems.count) {
-        [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:[self.tableView rowsInRect:self.tableView.visibleRect]]
+        [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.imageItems.count)]
                                   columnIndexes:[NSIndexSet indexSetWithIndex:[self.tableView columnWithIdentifier:@"Selection"]]];
     }
 }
 
 - (IBAction)onMarkSelected:(id)sender
 {
-    [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         ((RTImageItem *)self.imageItems[idx]).selected = YES;
     }];
     [self.tableView reloadDataForRowIndexes:self.tableView.selectedRowIndexes
-                              columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+                              columnIndexes:[NSIndexSet indexSetWithIndex:[self.tableView columnWithIdentifier:@"Selection"]]];
 }
 
 - (IBAction)onMarkDeselected:(id)sender
 {
-    [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.tableView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         ((RTImageItem *)self.imageItems[idx]).selected = NO;
     }];
     [self.tableView reloadDataForRowIndexes:self.tableView.selectedRowIndexes
-                              columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+                              columnIndexes:[NSIndexSet indexSetWithIndex:[self.tableView columnWithIdentifier:@"Selection"]]];
 }
 
 - (IBAction)onViewInFinder:(id)sender
@@ -198,7 +200,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
 - (IBAction)onStart:(id)sender {
     NSString *apiKey = [[[NSUserDefaultsController sharedUserDefaultsController] defaults] stringForKey:@"TINY_PNG_APIKEY"];
     if (apiKey.length <= 0) {
-        NSBeginAlertSheet(@"API key required!", @"OK", @"Show me where to find", nil, self.window, self, @selector(sheetDidEnd:returnCode:contextInfo:), NULL, NULL, @"Please input your Api key and HIT ENTER");
+        NSBeginAlertSheet(@"API key required!", @"OK", @"Show me where to find", nil, self.window, self, @selector(sheetDidEnd:returnCode:contextInfo:), NULL, NULL, @"Please input your Api key and hit ENTER");
         return;
     }
     
@@ -241,8 +243,11 @@ static NSOperationQueue *RTImageCompressingQueue() {
                     if (json) {
                         [RTImageCompressingQueue() cancelAllOperations];
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            NSBeginAlertSheet(json[@"error"] ?: @"Unknown error", @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"]);
+                            NSBeginAlertSheet(json[@"error"] ?: error.localizedFailureReason, @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"] ?: error.localizedDescription);
                         });
+                    }
+                    else {
+                        NSLog(@"%@", error);
                     }
                 }
                 else if (response.statusCode == 201) {
@@ -252,13 +257,17 @@ static NSOperationQueue *RTImageCompressingQueue() {
                         if (compressURL && [[NSData dataWithContentsOfURL:compressURL] writeToFile:obj.imagePath
                                                                                         atomically:YES]) {
                             obj.state = RTImageOptimizeStateOptimized;
+                            obj.selected = NO;
+                            self.optimizedTotalBytes -= obj.imageSize - obj.imageSizeOptimized;
                         }
                     }
                 }
                 else {
                     obj.state = RTImageOptimizeStateFailed;
+                    NSLog(@"%@", response);
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    [self updateStats];
                     [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:idx]
                                               columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.tableColumns.count)]];
                 });
@@ -280,7 +289,8 @@ static NSOperationQueue *RTImageCompressingQueue() {
 
 - (void)sheetDidEnd:(NSWindow *)sheet
          returnCode:(NSInteger)returnCode
-        contextInfo:(void *)contextInfo {
+        contextInfo:(void *)contextInfo
+{
     if (returnCode == NSAlertAlternateReturn) {
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://tinypng.com/developers"]];
     }
@@ -293,11 +303,15 @@ static NSOperationQueue *RTImageCompressingQueue() {
         self.startButton.enabled = NO;
         self.concurrencyButton.enabled = NO;
         self.tableView.enabled = NO;
+        self.progressIndicator.hidden = NO;
+        [self.progressIndicator startAnimation:self];
     }
     else {
         self.startButton.enabled = YES;
         self.concurrencyButton.enabled = YES;
         self.tableView.enabled = YES;
+        self.progressIndicator.hidden = YES;
+        [self.progressIndicator stopAnimation:self];
     }
 }
 
@@ -324,6 +338,11 @@ static NSOperationQueue *RTImageCompressingQueue() {
     }
 }
 
+- (void)updateStats
+{
+    self.statsLabel.stringValue = [NSString stringWithFormat:@"%lu/%lu, Compress ratio:%.2f", (unsigned long)self.optimizedTotalBytes, (unsigned long)self.totalBytes, (float)1.f * self.optimizedTotalBytes / self.totalBytes];
+}
+
 - (void)reloadImages
 {
     NSString *path = [RTWorkspace currentWorkspacePath].stringByDeletingLastPathComponent;
@@ -340,12 +359,20 @@ static NSOperationQueue *RTImageCompressingQueue() {
         NSString *relaventPath = nil;
         
         [self.imageItems removeAllObjects];
-
+        self.totalBytes = self.optimizedTotalBytes = 0;
+        
         BOOL allSelected = YES;
         while (relaventPath = [enumerator nextObject]) {
             if ([allowedImageTypes containsObject:relaventPath.pathExtension.lowercaseString]) {
                 RTImageItem *item = [RTImageItem itemWithPath:[path stringByAppendingPathComponent:relaventPath]];
                 item.selected = !item.hasOptimized;
+                
+                self.totalBytes += item.imageSize;
+                if (item.imageSizeOptimized)
+                    self.optimizedTotalBytes += item.imageSizeOptimized;
+                else
+                    self.optimizedTotalBytes += item.imageSize;
+                
                 if (!item.isSelected) {
                     allSelected = NO;
                 }
@@ -358,6 +385,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
             if (allSelected)
                 [self onToggleSelectionAll:self];
             
+            [self updateStats];
             [self.tableView reloadData];
         });
     });
@@ -372,6 +400,12 @@ static NSOperationQueue *RTImageCompressingQueue() {
         @"NSStatusUnavailable",
     };
     return [NSImage imageNamed:imageNames[state]];
+}
+
+- (void)clearImageItems
+{
+    [self.imageItems removeAllObjects];
+    [self.tableView reloadData];
 }
 
 #pragma mark - NSTableView
@@ -432,17 +466,5 @@ sortDescriptorsDidChange:(NSArray<NSSortDescriptor *> *)oldDescriptors
     [self.imageItems sortUsingDescriptors:tableView.sortDescriptors];
     [tableView reloadData];
 }
-
-- (NSString *)tableView:(NSTableView *)tableView
-         toolTipForCell:(NSCell *)cell
-                   rect:(NSRectPointer)rect
-            tableColumn:(nullable NSTableColumn *)tableColumn
-                    row:(NSInteger)row
-          mouseLocation:(NSPoint)mouseLocation
-{
-    return tableColumn.title;
-}
-
-
 
 @end
