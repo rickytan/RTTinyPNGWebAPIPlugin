@@ -85,7 +85,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
     {
         RTHeaderCell *cell = [[RTHeaderCell alloc] init];
         self.selectAllCell = cell;
-        self.tableView.tableColumns.firstObject.headerCell = cell;
+        ((NSTableColumn *)self.tableView.tableColumns.firstObject).headerCell = cell;
     }
     
     [self reloadImages];
@@ -218,7 +218,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
                                    options:NSKeyValueObservingOptionNew
                                    context:observingContext];
     
-    [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.imageItems enumerateObjectsUsingBlock:^(RTImageItem *obj, NSUInteger idx, BOOL *stop) {
         if (obj.selected) {
             [RTImageCompressingQueue() addOperationWithBlock:^{
                 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:TINY_PNG_HOST]
