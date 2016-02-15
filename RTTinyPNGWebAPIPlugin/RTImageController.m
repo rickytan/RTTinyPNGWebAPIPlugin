@@ -141,6 +141,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
     }];
     [self.tableView reloadDataForRowIndexes:self.tableView.selectedRowIndexes
                               columnIndexes:[NSIndexSet indexSetWithIndex:[self.tableView columnWithIdentifier:@"Selection"]]];
+    [self.tableView deselectAll:sender];
 }
 
 - (IBAction)onMarkDeselected:(id)sender
@@ -150,6 +151,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
     }];
     [self.tableView reloadDataForRowIndexes:self.tableView.selectedRowIndexes
                               columnIndexes:[NSIndexSet indexSetWithIndex:[self.tableView columnWithIdentifier:@"Selection"]]];
+    [self.tableView deselectAll:sender];
 }
 
 - (IBAction)onViewInFinder:(id)sender
@@ -220,6 +222,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
                 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:TINY_PNG_HOST]
                                                                        cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                                    timeoutInterval:8.f];
+                request.timeoutInterval = 10.f;
                 request.HTTPMethod = @"POST";
                 [request setValue:auth
                forHTTPHeaderField:@"Authorization"];
@@ -240,12 +243,15 @@ static NSOperationQueue *RTImageCompressingQueue() {
                 }
                 if (error) {
                     obj.state = RTImageOptimizeStateFailed;
+                    
+                    // Api error, we should stop
                     if (json) {
                         [RTImageCompressingQueue() cancelAllOperations];
                         dispatch_async(dispatch_get_main_queue(), ^{
                             NSBeginAlertSheet(json[@"error"] ?: error.localizedFailureReason, @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"] ?: error.localizedDescription);
                         });
                     }
+                    // Network error, skip
                     else {
                         NSLog(@"%@", error);
                     }
@@ -379,6 +385,8 @@ static NSOperationQueue *RTImageCompressingQueue() {
                 [self.imageItems addObject:item];
             }
         }
+        [self.imageItems sortUsingDescriptors:self.tableView.sortDescriptors];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             self.loading = NO;
             self.selectAllCell.state = NSOffState;
