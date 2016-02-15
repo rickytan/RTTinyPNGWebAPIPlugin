@@ -51,7 +51,8 @@ static const char *RT_IMAGE_ORIGIN_SIZE_KEY = "com.tinypng.originSize";
             }
         }
         NSImage *image = [[NSImage alloc] initWithContentsOfFile:filePath];
-        self.size = image.size;
+        NSImageRep *rep = image.representations.firstObject;
+        self.size = NSMakeSize(rep.pixelsWide, rep.pixelsHigh);
     }
     return self;
 }
