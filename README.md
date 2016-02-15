@@ -30,13 +30,21 @@ When **Start** button pressed, the selected(with a check mark on the left) image
 
 ![Context Menu](./ScreenShots/s3.png)
 
+### Sorting
+
+The **Image Name**, **Image Path**, **File Size**, **Optimized** columns support sorting, use them well :smile:.
+
+![Sorting](./ScreenShots/sorting.png)
+
 ## How to install
 
 1. Just clone or download the Repo, and build with your **Xcode**, then restart **Xcode**.
-2. Download the binary [HERE](), decompress and move it to `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`
-3. ​
+2. Download the binary [HERE](https://github.com/rickytan/RTTinyPNGWebAPIPlugin/releases), decompress and move it to `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`
+3. ~~Open [Package Manager](http://alcatraz.io/) and search `RTTinyPNGWeibAPIPlugin`~~(Not yet)
 
 > **Note**: If Xcode prompt a dialog, please click **Load Bundle**.
+> 
+> ![Load Bundle](./ScreenShots/load-bundle.png)
 
 After you successfully installed the plugin, you can open the plugin window in **File** menu, or press `Shift Control t` for short.
 
@@ -71,4 +79,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
