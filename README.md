@@ -1,4 +1,6 @@
-# RTTinyPNGWebAPIPlugin
+# RTTinyPNGWebAPIPlugin [![Build Status](https://travis-ci.org/rickytan/RTTinyPNGWebAPIPlugin.svg)](https://travis-ci.org/rickytan/RTTinyPNGWebAPIPlugin) [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](./LICENSE)
+
+[![Donate](https://www.paypalobjects.com/webstatic/en_US/btn/btn_donate_pp_142x27.png "Donate me a cup of coffee")](http://rickytan.cn/donate/ "Donate me a cup of coffee")
 
 ## Introduction
 
