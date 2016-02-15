@@ -59,7 +59,7 @@
 @property (nonatomic, strong) NSMutableArray *imageItems;
 @property (assign) NSUInteger totalBytes, optimizedTotalBytes;
 @property (nonatomic, assign, getter=isLoading) BOOL loading;
-@property (nonatomic, assign, getter=isProcessing) BOOL processing;
+@property (assign, getter=isProcessing) BOOL processing;
 @end
 
 @implementation RTImageController
@@ -127,11 +127,12 @@ static NSOperationQueue *RTImageCompressingQueue() {
         }];
         self.selectAllCell.checkBox.state = NSOffState;
     }
+    // Redraw the cell
     [self.tableView.headerView setNeedsDisplayInRect:[self.tableView.headerView headerRectOfColumn:0]];
-    if (self.imageItems.count) {
-        [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.imageItems.count)]
-                                  columnIndexes:[NSIndexSet indexSetWithIndex:[self.tableView columnWithIdentifier:@"Selection"]]];
-    }
+
+    [self.tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.imageItems.count)]
+                              columnIndexes:[NSIndexSet indexSetWithIndex:[self.tableView columnWithIdentifier:@"Selection"]]];
+    
 }
 
 - (IBAction)onMarkSelected:(id)sender
@@ -232,6 +233,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
                 
                 NSHTTPURLResponse *response = nil;
                 NSError *error = nil;
+                
                 NSData *data = [NSURLConnection sendSynchronousRequest:request
                                                      returningResponse:&response
                                                                  error:&error];
@@ -241,36 +243,44 @@ static NSOperationQueue *RTImageCompressingQueue() {
                                                            options:0
                                                              error:NULL];
                 }
-                if (error) {
-                    obj.state = RTImageOptimizeStateFailed;
-                    
-                    // Api error, we should stop
-                    if (json) {
-                        [RTImageCompressingQueue() cancelAllOperations];
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            NSBeginAlertSheet(json[@"error"] ?: error.localizedFailureReason, @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"] ?: error.localizedDescription);
-                        });
-                    }
-                    // Network error, skip
-                    else {
-                        NSLog(@"%@", error);
-                    }
-                }
-                else if (response.statusCode == 201) {
-                    if (json) {
-                        obj.imageSizeOptimized = [json[@"output"][@"size"] integerValue];
-                        NSURL *compressURL = [NSURL URLWithString:json[@"output"][@"url"]];
-                        if (compressURL && [[NSData dataWithContentsOfURL:compressURL] writeToFile:obj.imagePath
-                                                                                        atomically:YES]) {
-                            obj.state = RTImageOptimizeStateOptimized;
-                            obj.selected = NO;
-                            self.optimizedTotalBytes -= obj.imageSize - obj.imageSizeOptimized;
-                        }
+                
+                
+                if (response.statusCode == 201 && json) {
+                    obj.imageSizeOptimized = [json[@"output"][@"size"] integerValue];
+                    NSURL *compressURL = [NSURL URLWithString:json[@"output"][@"url"]];
+                    if (compressURL && [[NSData dataWithContentsOfURL:compressURL] writeToFile:obj.imagePath
+                                                                                    atomically:YES]) {
+                        obj.state = RTImageOptimizeStateOptimized;
+                        obj.selected = NO;
+                        self.optimizedTotalBytes -= obj.imageSize - obj.imageSizeOptimized;
                     }
                 }
                 else {
                     obj.state = RTImageOptimizeStateFailed;
-                    NSLog(@"%@", response);
+                    
+                    if (error) {
+                        // Api error, we should stop
+                        if (json) {
+                            [RTImageCompressingQueue() cancelAllOperations];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                NSBeginAlertSheet(json[@"error"] ?: error.localizedFailureReason, @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"] ?: error.localizedDescription);
+                            });
+                        }
+                        // Network error, skip
+                        else {
+                            NSLog(@"%@", error);
+                        }
+                    }
+                    // API call limit exceeded, we should stop
+                    else if (response.statusCode == 429) {
+                        [RTImageCompressingQueue() cancelAllOperations];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            NSBeginAlertSheet(json[@"error"], @"OK", nil, nil, self.window, nil, NULL, NULL, NULL, @"%@", json[@"message"]);
+                        });
+                    }
+                    else {
+                        NSLog(@"%@", response);
+                    }
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self updateStats];
