@@ -63,6 +63,7 @@
 @end
 
 @implementation RTImageController
+@synthesize processing = _processing;
 
 static NSString *const TINY_PNG_HOST = @"https://api.tinify.com/shrink";
 static void *observingContext = &observingContext;
@@ -99,7 +100,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
-                        change:(NSDictionary<NSString *,id> *)change
+                        change:(NSDictionary *)change
                        context:(void *)context
 {
     if (context == observingContext) {
@@ -314,20 +315,29 @@ static NSOperationQueue *RTImageCompressingQueue() {
 
 - (void)setProcessing:(BOOL)processing
 {
-    _processing = processing;
-    if (_processing) {
-        self.startButton.enabled = NO;
-        self.concurrencyButton.enabled = NO;
-        self.tableView.enabled = NO;
-        self.progressIndicator.hidden = NO;
-        [self.progressIndicator startAnimation:self];
+    @synchronized(self) {
+        _processing = processing;
+        if (_processing) {
+            self.startButton.enabled = NO;
+            self.concurrencyButton.enabled = NO;
+            self.tableView.enabled = NO;
+            self.progressIndicator.hidden = NO;
+            [self.progressIndicator startAnimation:self];
+        }
+        else {
+            self.startButton.enabled = YES;
+            self.concurrencyButton.enabled = YES;
+            self.tableView.enabled = YES;
+            self.progressIndicator.hidden = YES;
+            [self.progressIndicator stopAnimation:self];
+        }
     }
-    else {
-        self.startButton.enabled = YES;
-        self.concurrencyButton.enabled = YES;
-        self.tableView.enabled = YES;
-        self.progressIndicator.hidden = YES;
-        [self.progressIndicator stopAnimation:self];
+}
+
+- (BOOL)isProcessing
+{
+    @synchronized(self) {
+        return _processing;
     }
 }
 
@@ -479,7 +489,7 @@ static NSOperationQueue *RTImageCompressingQueue() {
 }
 
 - (void)tableView:(NSTableView *)tableView
-sortDescriptorsDidChange:(NSArray<NSSortDescriptor *> *)oldDescriptors
+sortDescriptorsDidChange:(NSArray *)oldDescriptors
 {
     [self.imageItems sortUsingDescriptors:tableView.sortDescriptors];
     [tableView reloadData];
