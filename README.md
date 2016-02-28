@@ -42,7 +42,7 @@ The **Image Name**, **Image Path**, **File Size**, **Optimized** columns support
 
 * Just clone or download the Repo, and build with your **Xcode**, then restart **Xcode**.
 * Download the binary [HERE](https://github.com/rickytan/RTTinyPNGWebAPIPlugin/releases), decompress and move it to `~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`
-* ~~Open [Package Manager](http://alcatraz.io/) and search `RTTinyPNGWebAPIPlugin`~~ (Not yet)
+* Open [Package Manager](http://alcatraz.io/) and search `RTTinyPNGWebAPIPlugin
 
 > **Note**: If Xcode prompt a dialog, please click **Load Bundle**.
 > 
